@@ -507,6 +507,46 @@
     background: #e55a00;
   }
 
+  #adults-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  #adults-modal-content input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  #adults-modal-content button {
+    padding: 10px 20px;
+    background: var(--sport-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #adults-modal-content button:hover {
+    background: #e55a00;
+  }
+  
+  .error-message-modal {
+    color: var(--red-color);
+    font-size: 0.9rem;
+    margin-top: -10px;
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .logo-text {
       font-size: 1.2rem;
@@ -594,7 +634,7 @@
     <div class="filter-buttons">
       <button id="btn-all" onclick="app.showAllChannels()">Todos</button>
       <button id="btn-favorites" onclick="app.showFavorites()">Favoritos</button>
-      <button id="btn-adults" onclick="app.unlockAdults()">Adultos</button>
+      <button id="btn-adults" onclick="app.showAdultsModal()">Adultos</button>
     </div>
   </div>
 
@@ -665,6 +705,19 @@
       </div>
       <div class="quality-options" id="quality-options">
         </div>
+    </div>
+  </div>
+
+  <div class="modal" id="adults-modal">
+    <div class="modal-content" id="adults-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Contraseña de adultos</h3>
+        <button class="modal-close" onclick="app.closeAdultsModal()">&times;</button>
+      </div>
+      <p style="text-align: center;">Por favor, ingrese la contraseña de adultos para ver el contenido.</p>
+      <input type="password" id="adults-password-input" placeholder="Contraseña">
+      <div id="adults-error-message" class="error-message-modal">Contraseña incorrecta.</div>
+      <button onclick="app.checkAdultsPassword()">Desbloquear</button>
     </div>
   </div>
 </div>
@@ -836,33 +889,38 @@
     
     checkAdultsAndPlay: function(channel) {
       if (this.isAdultChannel(channel) && !this.state.isAdultsUnlocked) {
-        const password = prompt("Este canal es para adultos. Por favor, introduzca la contraseña:");
-        if (password === this.config.passwordAdults) {
-          this.state.isAdultsUnlocked = true;
-          localStorage.setItem("adults-unlocked", "true");
-          this.renderChannels();
-          this.showQualityModal(channel);
-        } else {
-          alert("Contraseña incorrecta.");
-        }
+        alert("Contenido para adultos. Utilice el botón 'Adultos' para desbloquearlo.");
       } else {
         this.showQualityModal(channel);
       }
     },
 
-    unlockAdults: function() {
+    showAdultsModal: function() {
       if (this.state.isAdultsUnlocked) {
         alert("El contenido de adultos ya está desbloqueado.");
         return;
       }
-      const password = prompt("Por favor, introduzca la contraseña de adultos:");
+      document.getElementById('adults-modal').style.display = 'flex';
+    },
+
+    closeAdultsModal: function() {
+      document.getElementById('adults-modal').style.display = 'none';
+      document.getElementById('adults-error-message').style.display = 'none';
+      document.getElementById('adults-password-input').value = '';
+    },
+
+    checkAdultsPassword: function() {
+      const passwordInput = document.getElementById('adults-password-input');
+      const password = passwordInput.value;
+      const errorMessage = document.getElementById('adults-error-message');
+
       if (password === this.config.passwordAdults) {
         this.state.isAdultsUnlocked = true;
         localStorage.setItem("adults-unlocked", "true");
+        this.closeAdultsModal();
         this.renderChannels();
-        alert("Contenido de adultos desbloqueado. Ahora puede ver los canales en la lista.");
       } else {
-        alert("Contraseña incorrecta.");
+        errorMessage.style.display = 'block';
       }
     },
     

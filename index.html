@@ -671,11 +671,11 @@
 <script>
   const app = {
     config: {
-      apiUrl: "/api/proxy/player_api.php", // Se ha cambiado la URL para que el proxy de Vercel funcione correctamente
+      apiUrl: "/api/proxy",
       username: "es3291730888528001",
       password: "31c30c64ed8d",
       passwordAdults: "0000",
-      liveBase: "/live/" // Se ha cambiado la URL para que el proxy de Vercel funcione correctamente
+      liveBase: "/live/"
     },
     
     state: {
@@ -700,7 +700,8 @@
       this.showLoading();
       
       const token = `username=${this.config.username}&password=${this.config.password}`;
-      const apiUrl = `${this.config.apiUrl}?${token}&action=get_live_streams`;
+      // URL corregida para usar el proxy de Vercel
+      const apiUrl = `${this.config.apiUrl}/player_api.php?${token}&action=get_live_streams`;
       
       console.log("Cargando canales de:", apiUrl);
       

@@ -675,7 +675,7 @@
       username: "es3291730888528001",
       password: "31c30c64ed8d",
       passwordAdults: "0000",
-      liveBase: "/live/"
+      liveBase: "/live" // Se ha corregido la URL base de reproducción para usar la ruta del proxy.
     },
     
     state: {
@@ -700,7 +700,6 @@
       this.showLoading();
       
       const token = `username=${this.config.username}&password=${this.config.password}`;
-      // URL corregida para usar el proxy de Vercel
       const apiUrl = `${this.config.apiUrl}/player_api.php?${token}&action=get_live_streams`;
       
       console.log("Cargando canales de:", apiUrl);
@@ -912,9 +911,9 @@
     
     showQualityModal: function(channel) {
       const qualities = [
-        { name: 'HD', url: `${app.config.liveBase}${app.config.username}/${app.config.password}/${channel.stream_id}.m3u8`, resolution: '1280x720' },
-        { name: 'SD', url: `${app.config.liveBase}${app.config.username}/${app.config.password}/${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
-        { name: 'FHD', url: `${app.config.liveBase}${app.config.username}/${app.config.password}/${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
+        { name: 'HD', url: `${app.config.liveBase}/${app.config.username}/${app.config.password}/${channel.stream_id}.m3u8`, resolution: '1280x720' },
+        { name: 'SD', url: `${app.config.liveBase}/${app.config.username}/${app.config.password}/${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
+        { name: 'FHD', url: `${app.config.liveBase}/${app.config.username}/${app.config.password}/${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
       ];
       
       let optionsHTML = '';

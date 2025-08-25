@@ -652,8 +652,7 @@
       channels: [],
       favorites: JSON.parse(localStorage.getItem("favorites") || "[]"),
       searchTerm: "",
-      isAdultsUnlocked: localStorage.getItem("adults-unlocked") === "true",
-      currentView: "all"
+      isAdultsUnlocked: localStorage.getItem("adults-unlocked") === "true"
     },
     
     init: function() {
@@ -687,14 +686,13 @@
             throw new Error("Respuesta inválida de la API");
           }
           
-          if (data.length === 0) {
-            this.showError("Ningún canal encontrado en la API. Esto puede deberse a que las credenciales no son correctas o la lista está vacía.");
-            return;
-          }
-          
           this.state.channels = data;
           
-          console.log("Total de canales encontrados:", this.state.channels.length);
+          if (this.state.channels.length === 0) {
+            this.showError("No se encontraron canales. Es posible que la API esté vacía o que haya un problema con las credenciales.");
+          } else {
+            console.log("Total de canales encontrados:", this.state.channels.length);
+          }
           
           this.renderChannels();
         })
@@ -712,21 +710,13 @@
     
     renderChannels: function() {
       let channelsToShow = this.state.channels.filter(channel => {
-        if (!channel.category_name) return false;
-        
         const isAdult = this.isAdultChannel(channel);
         if (isAdult && !this.state.isAdultsUnlocked) {
           return false;
         }
 
         const name = channel.name || '';
-        const matchesSearch = name.toLowerCase().includes(this.state.searchTerm);
-
-        if (this.state.searchTerm) {
-          return matchesSearch;
-        }
-
-        return true;
+        return name.toLowerCase().includes(this.state.searchTerm);
       });
       
       let channelsHTML = "";

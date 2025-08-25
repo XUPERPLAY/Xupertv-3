@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/proxy/:path*",
-      "destination": "http://estoeslaguerra.com:80/:path*"
+      "destination": "http://esproipingttm.top:8080/:path*"
 },
 {
       "source": "/live/:path*",
-      "destination": "http://estoeslaguerra.com:80/live/:path*"
+      "destination": "http://esproipingttm.top:8080/live/:path*"
     }  
   ]
 }

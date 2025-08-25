@@ -737,7 +737,7 @@
       channels: [],
       favorites: JSON.parse(localStorage.getItem("favorites") || "[]"),
       searchTerm: "",
-      isAdultsUnlocked: localStorage.getItem("adults-unlocked") === "true",
+      isAdultsUnlocked: false, // Ahora se inicializa a false
       currentView: 'all'
     },
     
@@ -916,7 +916,6 @@
 
       if (password === this.config.passwordAdults) {
         this.state.isAdultsUnlocked = true;
-        localStorage.setItem("adults-unlocked", "true");
         this.closeAdultsModal();
         this.renderChannels();
       } else {

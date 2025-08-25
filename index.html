@@ -141,34 +141,6 @@
     color: var(--gray-color);
   }
 
-  .categories {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    scrollbar-width: none;
-  }
-
-  .categories::-webkit-scrollbar {
-    display: none;
-  }
-
-  .category-btn {
-    padding: 8px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--light-color);
-    border: none;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-
-  .category-btn:hover, .category-btn.active {
-    background: var(--sport-color);
-  }
-
   .channels-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -592,8 +564,6 @@
         </svg>
       <input type="text" class="search-input" placeholder="Buscar canales..." id="search-input">
     </div>
-    <div class="categories" id="categories-container">
-      </div>
   </div>
 
   <div class="content" id="content">
@@ -675,16 +645,15 @@
       username: "es3291730888528001",
       password: "31c30c64ed8d",
       passwordAdults: "0000",
-      liveBase: "/live" // Se ha corregido la URL base de reproducción para usar la ruta del proxy.
+      liveBase: "/live"
     },
     
     state: {
-      categories: [],
       channels: [],
-      currentCategory: "all",
       favorites: JSON.parse(localStorage.getItem("favorites") || "[]"),
       searchTerm: "",
-      isAdultsUnlocked: localStorage.getItem("adults-unlocked") === "true"
+      isAdultsUnlocked: localStorage.getItem("adults-unlocked") === "true",
+      currentView: "all"
     },
     
     init: function() {
@@ -727,7 +696,6 @@
           
           console.log("Total de canales encontrados:", this.state.channels.length);
           
-          this.organizeChannelsByCategory();
           this.renderChannels();
         })
         .catch(error => {
@@ -740,16 +708,6 @@
       if (!channel.category_name) return false;
       const lowerCaseCategory = channel.category_name.toLowerCase();
       return lowerCaseCategory.includes("adult") || lowerCaseCategory.includes("xxx");
-    },
-    
-    organizeChannelsByCategory: function() {
-      const categories = new Set();
-      this.state.channels.forEach(channel => {
-        if (channel.category_name && channel.category_name.trim() !== "" && channel.category_name.toLowerCase() !== "sin categoría") {
-          categories.add(channel.category_name);
-        }
-      });
-      this.state.categories = Array.from(categories).sort();
     },
     
     renderChannels: function() {
@@ -768,46 +726,15 @@
           return matchesSearch;
         }
 
-        if (this.state.currentCategory === "all") {
-          return true;
-        } else if (this.state.currentCategory === "favorites") {
-          return this.state.favorites.some(fav => fav.stream_id === channel.stream_id);
-        } else {
-          return channel.category_name === this.state.currentCategory;
-        }
+        return true;
       });
-      
-      let categoriesHTML = `
-        <button class="category-btn ${this.state.currentCategory === "all" ? "active" : ""}" 
-                onclick="app.setCategory('all')">
-          Todos
-        </button>
-      `;
-      
-      if (this.state.categories && this.state.categories.length > 0) {
-        this.state.categories.forEach(category => {
-          categoriesHTML += `
-            <button class="category-btn ${this.state.currentCategory === category ? "active" : ""}" 
-                    onclick="app.setCategory('${category}')">
-              ${category}
-            </button>
-          `;
-        });
-      }
-
-      categoriesHTML += `
-        <button class="category-btn ${this.state.currentCategory === "favorites" ? "active" : ""}" 
-                onclick="app.setCategory('favorites')">
-          Favoritos
-        </button>
-      `;
       
       let channelsHTML = "";
       
       if (channelsToShow.length === 0) {
         channelsHTML = `
           <div style="text-align: center; padding: 40px; color: var(--gray-color);">
-            ${this.state.searchTerm ? "Ningún canal encontrado para esta búsqueda." : "Ningún canal encontrado en esta categoría."}
+            ${this.state.searchTerm ? "Ningún canal encontrado para esta búsqueda." : "No hay canales disponibles en este momento."}
           </div>
         `;
       } else {
@@ -841,23 +768,14 @@
         });
       }
       
-      document.getElementById("categories-container").innerHTML = categoriesHTML;
       document.getElementById("channels-grid").innerHTML = channelsHTML;
       
       const searchInput = document.getElementById('search-input');
       searchInput.value = this.state.searchTerm;
       searchInput.addEventListener('input', (e) => {
         this.state.searchTerm = e.target.value.toLowerCase();
-        this.setCategory(this.state.searchTerm ? "all" : this.state.currentCategory);
         this.renderChannels();
       });
-    },
-    
-    setCategory: function(category) {
-      this.state.currentCategory = category;
-      this.state.searchTerm = "";
-      document.getElementById('search-input').value = "";
-      this.renderChannels();
     },
     
     checkAdultsAndPlay: function(channel) {

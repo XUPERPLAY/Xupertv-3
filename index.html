@@ -641,12 +641,8 @@
 <script>
   const app = {
     config: {
-      // Revisa que estas credenciales sean correctas
       username: "es3291730888528001",
       password: "31c30c64ed8d",
-      // Esta URL base debe ser la misma que usas en vercel.json
-      listBase: "http://esproipingttm.top:8080",
-      // Contraseña para los canales de adultos
       passwordAdults: "0000" // Cambia esta contraseña si lo deseas
     },
     
@@ -669,6 +665,7 @@
     loadChannels: function() {
       this.showLoading();
       
+      // La API debe cargarse a través del proxy para evitar problemas de CORS en Vercel
       const apiUrl = `/api/proxy/player_api.php?username=${this.config.username}&password=${this.config.password}&action=get_live_streams`;
       
       fetch(apiUrl)
@@ -815,9 +812,10 @@
     
     showQualityModal: function(channel) {
       const qualities = [
-        { name: 'HD', url: `${app.config.listBase}/live/${this.config.username}/${this.config.password}/${channel.stream_id}.m3u8`, resolution: '1280x720' },
-        { name: 'SD', url: `${app.config.listBase}/live/${this.config.username}/${this.config.password}/${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
-        { name: 'FHD', url: `${app.config.listBase}/live/${this.config.username}/${this.config.password}/${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
+        // Las URLs de los canales ahora también pasan por el proxy de Vercel
+        { name: 'HD', url: `/live/${this.config.username}/${this.config.password}/${channel.stream_id}.m3u8`, resolution: '1280x720' },
+        { name: 'SD', url: `/live/${this.config.username}/${this.config.password}/${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
+        { name: 'FHD', url: `/live/${this.config.username}/${this.config.password}/${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
       ];
       
       let optionsHTML = '';

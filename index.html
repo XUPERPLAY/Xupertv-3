@@ -689,9 +689,10 @@
       let channelsToShow = this.state.channels;
       
       if (this.state.searchTerm) {
-        channelsToShow = this.state.channels.filter(channel => 
-          channel.name && channel.name.toLowerCase().includes(this.state.searchTerm.toLowerCase())
-        );
+        channelsToShow = this.state.channels.filter(channel => {
+          const name = channel.name || '';
+          return name.toLowerCase().includes(this.state.searchTerm.toLowerCase());
+        });
       }
       
       let channelsHTML = "";
@@ -707,7 +708,7 @@
           const isFavorite = this.state.favorites.some(fav => fav.stream_id === channel.stream_id);
           
           const sportsKeywords = ['deporte', 'sport', 'fútbol', 'basketball', 'nba', 'ufc', 'formula', 'mma', 'fight'];
-          const isSportChannel = channel.name && channel.category_name && (
+          const isSportChannel = (channel.name && channel.category_name) && (
             sportsKeywords.some(keyword => 
               channel.category_name.toLowerCase().includes(keyword) || channel.name.toLowerCase().includes(keyword)
             )

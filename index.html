@@ -642,12 +642,15 @@
 <script>
   const app = {
     config: {
+      // Usamos el proxy para acceder a la API de forma segura desde Vercel
       apiUrl: "/api/proxy",
+      // Tus credenciales
       username: "es3291730888528001",
       password: "31c30c64ed8d",
-      listBase: "http://esproipingttm.top:8080", // Puedes cambiar esta URL si tu lista cambia
-      liveBase: "",
-      passwordAdults: "0000" // Cambia esta contraseña si lo deseas
+      // La base de la URL para reproducir los canales (usando el proxy)
+      liveBase: "/live/",
+      // Contraseña para los canales de adultos
+      passwordAdults: "0000" // Cambia esta contraseña
     },
     
     state: {
@@ -658,7 +661,6 @@
     },
     
     init: function() {
-      this.config.liveBase = `/live/${this.config.username}/${this.config.password}/`;
       document.getElementById("app-content").style.display = "flex";
       this.loadChannels();
     },
@@ -819,9 +821,9 @@
     
     showQualityModal: function(channel) {
       const qualities = [
-        { name: 'HD', url: `${app.config.liveBase}${channel.stream_id}.m3u8`, resolution: '1280x720' },
-        { name: 'SD', url: `${app.config.liveBase}${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
-        { name: 'FHD', url: `${app.config.liveBase}${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
+        { name: 'HD', url: `${app.config.liveBase}${this.config.username}/${this.config.password}/${channel.stream_id}.m3u8`, resolution: '1280x720' },
+        { name: 'SD', url: `${app.config.liveBase}${this.config.username}/${this.config.password}/${channel.stream_id}_sd.m3u8`, resolution: '854x480' },
+        { name: 'FHD', url: `${app.config.liveBase}${this.config.username}/${this.config.password}/${channel.stream_id}_fhd.m3u8`, resolution: '1920x1080' }
       ];
       
       let optionsHTML = '';

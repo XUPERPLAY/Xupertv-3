@@ -703,9 +703,14 @@
     },
     
     isAdultChannel: function(channel) {
-      if (!channel.category_name) return false;
-      const lowerCaseCategory = channel.category_name.toLowerCase();
-      return lowerCaseCategory.includes("adult") || lowerCaseCategory.includes("xxx");
+      if (!channel.category_name && !channel.name) return false;
+      const lowerCaseCategory = channel.category_name ? channel.category_name.toLowerCase() : '';
+      const lowerCaseName = channel.name ? channel.name.toLowerCase() : '';
+
+      return lowerCaseCategory.includes("adult") || 
+             lowerCaseCategory.includes("xxx") || 
+             lowerCaseName.includes("xxx") ||
+             lowerCaseName.includes("adultos");
     },
     
     renderChannels: function() {

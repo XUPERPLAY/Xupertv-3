@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/proxy/:path*",
+      "destination": "http://estoeslaguerra.com:80/:path*"
+},
+{
+      "source": "/live/:path*",
+      "destination": "http://estoeslaguerra.com:80/live/:path*"
+    }  
+  ]
+}
